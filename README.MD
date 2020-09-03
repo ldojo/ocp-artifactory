@@ -44,6 +44,6 @@ In your new Artifactory deployment, you can then go to the Artifactory Admin UI 
 ### Some tips
 
 Your deployment configuration will survive pod restarts or redeployments, because a PersistentVolumeClaim is bound. However, be careful with Pod starts and stops. Specifically, when starting up a deployment, be careful not to kill it before it has successfully started up. Artifactory does take a minute or two to startup, and if you kill the Pod before that, you're likely to corrupt the data on the Persistent Volume as well, and the next time ARtifactory starts up it may be "broken". 
-
+It is best to tail the logs of the Pod and ensure it started up successfully before you kill it. 
 
 
