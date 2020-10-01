@@ -28,7 +28,8 @@ Common Name (eg, your name or your server's hostname) []:ear-operator-pipeline.a
 Email Address []:
 ```
 
-In the command above, it is very important, that the "Common Name" or hostname is the same as the Openshift Route that will be generated below. In the example above, because I know my Route will be named "ear", the hostname Openshift will autogenerate will be ear-[my project name, which is "operator-pipeline"].apps.[cluster name, which is ilab-ctigtdc21d].ecs.dyn.nsroot.net
+In the command above, it is very important, that the "Common Name" or hostname is the same as the Openshift Route that will be generated below. In the example above, because I know my Route will be named "ear", the hostname Openshift will autogenerate will be `ear-[my project name, which is "operator-pipeline"].apps.[cluster name, which is ilab-ctigtdc21d].ecs.dyn.nsroot.net`
+
 The step above will create a tls.key and tls.crt file.
 
 #### create certs secret
@@ -41,7 +42,7 @@ create an Openshift Secret with the two files we created above:
 #### enable cert trust on Docker client OS
 
 On the VM that you'll be using docker to login, you'll want to add the cert to the docker trust store.
-On RHel, this is verified to work:
+On RHEL, this is verified to work:
 put the tls.crt file in the docker trust store:
 ```
 cp /path/to/tls.crt /etc/docker/certs.d/[hostname set above when creating the cert]/
@@ -72,7 +73,6 @@ Wait for the artifactory container to start up -- it does take a few minutes, so
 
 With all that in place, you should be able to successfully `docker login ear-operator-pipeline.apps.ilab-ctigtdc21d.ecs.dyn.nsroot.net` with the same credentials that you set up in the ARtifactory UI console.
 
-```
 ### Tear it down
 ```
 oc process -f artifactory-template.yml -p NAME=ear -p IMAGE=operator-dev-3rdpartymanual-local.artifactrepo-dev.nam.nsroot.net/artifactory-pro:6.20.1 | oc delete -f -
