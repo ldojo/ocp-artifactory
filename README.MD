@@ -3,8 +3,7 @@
 #### Set up certs
 first we want to set up our certs so that we can use Artifactory as a docker registry with a secure route
 
-For this example, we'll be spinning up Openshift Service, Deployment, Route, etc.., with the name "ear", so we'll want to set the hostname
-for the cert to be the same as the Openshift Route "ear" that we'll generate in a later stage.
+For this example, we'll be spinning up Openshift Service, Deployment, Route, etc.., with the name "ear", so we'll want to set the hostname in the command below for the cert to be the same as the Openshift Route "ear" that we'll generate in a later stage.
 
 ```
 $ openssl req -new -x509 -sha256 -newkey rsa:2048 -nodes -keyout tls.key -days 365 -out tls.crt
@@ -29,12 +28,13 @@ Common Name (eg, your name or your server's hostname) []:ear-operator-pipeline.a
 Email Address []:
 ```
 
-In the command above, it is very important, that the "Common Name" or hostname is the same as the Openshift Route that will be generated below. In the example above, because I know my Route will be named "ear", the hostname Openshift will autogenerate will be ear-[my project name, which is "operator-pipeline"].apps.[cluster name, which is ilab-ctigtdc21d].ecs.dyn.nsroot.net
+In the command above, it is very important, that the "Common Name" or hostname is the same as the Openshift Route that will be generated below. In the example above, because I know my Route will be named "ear", the hostname Openshift will autogenerate will be `ear-[my project name, which is "operator-pipeline"].apps.[cluster name, which is ilab-ctigtdc21d].ecs.dyn.nsroot.net`
+
 The step above will create a tls.key and tls.crt file.
 
 #### create certs secret
 
-create an Openshift Secret with the two files we created above:
+create an Openshift Secret with the two files we created above (be sure to name it 'nginx-certs', as the deployment below will look for it):
 ```
  oc create secret tls nginx-certs --cert=tls.crt --key=tls.key
 ```
@@ -42,7 +42,7 @@ create an Openshift Secret with the two files we created above:
 #### enable cert trust on Docker client OS
 
 On the VM that you'll be using docker to login, you'll want to add the cert to the docker trust store.
-On RHel, this is verified to work:
+On RHEL, this is verified to work:
 put the tls.crt file in the docker trust store:
 ```
 cp /path/to/tls.crt /etc/docker/certs.d/[hostname set above when creating the cert]/
@@ -75,11 +75,10 @@ ear                      ear-operator-pipeline.apps.ilab-ctigtdc21d.ecs.dyn.nsro
 
 Note that the hostname is the same as the hostname we set when creating the cert with openssl. This has to match. If it doesn't, either edit the Route manually to set the hostname, or rebuild the certs and cert secret we created above.
 
-Wait for the artifactory container to start up -- it does take a few minutes, so recommend tailing the container log to see and wait until it has started up successfully. Then you can go to the Route above in your browser and set up Artifactory with an admin password and initial settings. Be sure to add an Artifactory license -- without it, docker access won't work.
+The Deployment will create a Pod named "ear-XXXX-XXXX". The Pod has an nginx and artifactory container in it. Wait for the artifactory container to start up -- it does take a few minutes, so recommend tailing the container log to see and wait until it has started up successfully. Then you can go to the Route above in your browser and set up Artifactory with an admin password and initial settings. Be sure to add a valid Artifactory license -- without it, docker access won't work.
 
 With all that in place, you should be able to successfully `docker login ear-operator-pipeline.apps.ilab-ctigtdc21d.ecs.dyn.nsroot.net` with the same credentials that you set up in the ARtifactory UI console.
 
-```
 ### Tear it down
 ```
 oc process -f artifactory-template.yml -p NAME=ear -p IMAGE=operator-dev-3rdpartymanual-local.artifactrepo-dev.nam.nsroot.net/artifactory-pro:6.20.1 | oc delete -f -
