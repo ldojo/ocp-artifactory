@@ -3,8 +3,7 @@
 #### Set up certs
 first we want to set up our certs so that we can use Artifactory as a docker registry with a secure route
 
-For this example, we'll be spinning up Openshift Service, Deployment, Route, etc.., with the name "ear", so we'll want to set the hostname
-for the cert to be the same as the Openshift Route "ear" that we'll generate in a later stage.
+For this example, we'll be spinning up Openshift Service, Deployment, Route, etc.., with the name "ear", so we'll want to set the hostname in the command below for the cert to be the same as the Openshift Route "ear" that we'll generate in a later stage.
 
 ```
 $ openssl req -new -x509 -sha256 -newkey rsa:2048 -nodes -keyout tls.key -days 365 -out tls.crt
