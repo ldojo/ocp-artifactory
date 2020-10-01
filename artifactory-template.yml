@@ -125,7 +125,7 @@ objects:
         volumes:
         - name: jfrog
           persistentVolumeClaim:
-            claimName: "operator-pipeline-ear"
+            claimName: ${NAME}
         - name: nginx-config
           configMap:
             name: nginx
