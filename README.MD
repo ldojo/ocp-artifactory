@@ -56,6 +56,12 @@ It may help to also add the certs to the OS trust store. Copy the tls.key and tl
 
 #### Deploy artifactory
 
+The artifactory container will run as uid 1030 and attempt to write to the PVC, and you may want to set your project's security context settings accordingly if it is not already. You can do so by yadjusting the scc settings like so:
+
+```
+oc adm policy add-scc-to-user anyuid -z default
+```
+
 ```
 oc process -f artifactory-template.yml -p NAME=ear -p IMAGE=operator-dev-3rdpartymanual-local.artifactrepo-dev.nam.nsroot.net/artifactory-pro:6.20.1 | oc create -f -
 ```
