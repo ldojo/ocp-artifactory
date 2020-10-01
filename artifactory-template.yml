@@ -18,22 +18,6 @@ parameters:
 - description: "The image tag for Artifactory"
   name: "IMAGE"
   required: true
-- description: "The API endpoint for the image download plugin to hit with the image data"
-  name: "JFROG_EVENT_PROCESSOR"
-  required: true
-  value: "http://operator-pipeline-api:8080/downloadEvent"
-- description: "The RedHat credential for the remote proxy repos"
-  name: JFROG_RH_PASSWD
-  required: true
-- description: "The RedHat credential for the remote proxy repos"
-  name: JFROG_RH_USER
-  required: true
-- description: "The Citi Proxy host, for remote repos to access the public repos"
-  name: CITI_PROXY
-  required: true
-- description: "The Citi Proxy port, for remote repos to access the public repos"
-  name: CITI_PROXY_PORT
-  required: true
 - description: "The server name, particularly as it matches the nginx cert server name for https setting on the docker registry in artifactory. This value will be set in nginx configuration"
   name: NGINX_SERVER_NAME
   required: false
@@ -52,7 +36,7 @@ objects:
 - apiVersion: v1
   kind: PersistentVolumeClaim
   metadata:
-    name: operator-pipeline-ear
+    name: ${NAME}
   spec:
     accessModes:
     - ReadWriteOnce
@@ -173,18 +157,7 @@ objects:
               mountPath: /etc/ssl/private
           terminationMessagePolicy: File
           image: operator-dev-3rdpartymanual-local.artifactrepo-dev.nam.nsroot.net/nginx:latest
-        - env:
-          - name: CITI_PROXY
-            value: ${CITI_PROXY}
-          - name: CITI_PROXY_PORT
-            value: ${CITI_PROXY_PORT}
-          - name: JFROG_EVENT_PROCESSOR
-            value: ${JFROG_EVENT_PROCESSOR}          
-          - name: JFROG_RH_PASSWD
-            value: ${JFROG_RH_PASSWD}
-          - name: JFROG_RH_USER
-            value: ${JFROG_RH_USER}
-          image: ${IMAGE}
+        - image: ${IMAGE}
           imagePullPolicy: Always
           name: ${NAME}
           volumeMounts:
