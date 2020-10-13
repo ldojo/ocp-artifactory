@@ -28,7 +28,7 @@ Common Name (eg, your name or your server's hostname) []:ear-operator-pipeline.a
 Email Address []:
 ```
 
-In the command above, it is very important, that the "Common Name" or hostname is the same as the Openshift Route that will be generated below. In the example above, because I know my Route will be named "ear", the hostname Openshift will autogenerate will be `ear-[my project name, which is "operator-pipeline"].apps.[cluster name, which is ilab-ctigtdc21d].ecs.dyn.nsroot.net`
+In the command above, **it is very important, that the "Common Name" or hostname is the same as the Openshift Route that will be generated below.** In the example above, because I know my Route will be named "ear", the hostname Openshift will autogenerate will be `ear-[my project name, which is "operator-pipeline"].apps.[cluster name, which is ilab-ctigtdc21d].ecs.dyn.nsroot.net`
 
 The step above will create a tls.key and tls.crt file.
 
@@ -73,7 +73,7 @@ $ oc get route | grep ear
 ear                      ear-operator-pipeline.apps.ilab-ctigtdc21d.ecs.dyn.nsroot.net                             ear                      443     passthrough/Redirect   None
 ```
 
-Note that the hostname is the same as the hostname we set when creating the cert with openssl. This has to match. If it doesn't, either edit the Route manually to set the hostname, or rebuild the certs and cert secret we created above.
+**Note that the hostname is the same as the hostname we set when creating the cert with openssl. This has to match.** If it doesn't, either edit the Route manually to set the hostname, or rebuild the certs and cert secret we created above.
 
 The Deployment will create a Pod named "ear-XXXX-XXXX". The Pod has an nginx and artifactory container in it. Wait for the artifactory container to start up -- it does take a few minutes, so recommend tailing the container log to see and wait until it has started up successfully. Then you can go to the Route above in your browser and set up Artifactory with an admin password and initial settings. Be sure to add a valid Artifactory license -- without it, docker access won't work.
 
