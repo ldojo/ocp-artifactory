@@ -84,6 +84,17 @@ With all that in place, you should be able to successfully `docker login ear-ope
 oc process -f artifactory-template.yml -p NAME=ear -p IMAGE=operator-dev-3rdpartymanual-local.artifactrepo-dev.nam.nsroot.net/artifactory-pro:6.20.1 | oc delete -f -
 ```
 
+### Giving Openshift ability to pull from the artifactory instance
+
+With your own Artifactory instance running in place and providing a docker registry you can do docker pull/push against, you may also want to give Openshift the ability to pull images from this docker registry so that it can run Pods from those images. To do this, similarly to how you added the cert to your client host's ca cert trust, you need to tell Openshift to trust your cert as well. You must be a cluster-admin on the openshift cluster to run these commands:
+```
+#substitute the name of the configmap, route, cert file location, etc., in the below commands with those relevant to your use case.
+#create a configmap in the 'openshift-config' namespace that contains your .crt file
+oc create configmap operator-pipeline-ear-cas -n openshift-config --from-file=ear-operator-pipeline.apps.ilab-ctigtdc21d.ecs.dyn.nsroot.net=/etc/docker/certs.d/ear-operator-pipeline.apps.ilab-ctigtdc21d.ecs.dyn.nsroot.net/tls.crt 
+#add the configMap to the cluster configuration. Note, this will overwrite the "additionalTrustedCA" section of image.config.openshift.io/cluster with just the configmap below that is listed. Recommended to check first if someone else might have already added data in that section, and to do an `oc edit image.config.openshift.io/cluster` instead of a patch. 
+oc patch image.config.openshift.io/cluster --patch '{"spec":{"additionalTrustedCA":{"name":"operator-pipeline-ear-cas"}}}' --type=merge
+```
+
 
 ### Spin up a persistent Artifactory with "pre-baked" configuration
 
