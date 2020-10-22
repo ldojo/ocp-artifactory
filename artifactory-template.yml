@@ -156,7 +156,7 @@ objects:
             - name: nginx-certs
               mountPath: /etc/ssl/private
           terminationMessagePolicy: File
-          image: operator-dev-3rdpartymanual-local.artifactrepo-dev.nam.nsroot.net/nginx:latest
+          image: nginx:latest
         - image: ${IMAGE}
           imagePullPolicy: Always
           name: ${NAME}
