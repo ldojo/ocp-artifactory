@@ -33,17 +33,17 @@ parameters:
   name: HTTPS_PROXY
   required: false
 objects:
-- apiVersion: v1
-  kind: PersistentVolumeClaim
-  metadata:
-    name: ${NAME}
-  spec:
-    accessModes:
-    - ReadWriteOnce
-    resources:
-      requests:
-        storage: 75Gi
-    storageClassName: thin
+#- apiVersion: v1
+#  kind: PersistentVolumeClaim
+#  metadata:
+#    name: ${NAME}
+#  spec:
+#    accessModes:
+#    - ReadWriteOnce
+#    resources:
+#      requests:
+#        storage: 75Gi
+#    storageClassName: thin
 - apiVersion: v1
   kind: Service
   metadata:
@@ -123,12 +123,12 @@ objects:
         securityContext:
           fsGroup: 1030
         volumes:
-        - name: jfrog
-          persistentVolumeClaim:
-            claimName: ${NAME}
+#        - name: jfrog
+#          persistentVolumeClaim:
+#            claimName: ${NAME}
         - name: nginx-config
           configMap:
-            name: nginx
+            name: ${NAME} 
             items:
               - key: nginx.conf
                 path: nginx.conf
@@ -160,17 +160,17 @@ objects:
         - image: ${IMAGE}
           imagePullPolicy: Always
           name: ${NAME}
-          volumeMounts:
-          - mountPath: "/var/opt/jfrog/artifactory/"
-            name: "jfrog"
+#          volumeMounts:
+#          - mountPath: "/var/opt/jfrog/artifactory/"
+#            name: "jfrog"
           ports:
           - containerPort: 8081
             name: http
             protocol: TCP
-          resources:
-            requests:
-              cpu: 100m
-              memory: 4Gi
+#          resources:
+#            requests:
+#              cpu: 100m
+#              memory: 4Gi
         restartPolicy: Always
         terminationGracePeriodSeconds: 30
 - apiVersion: route.openshift.io/v1
